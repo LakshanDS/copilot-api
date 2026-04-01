@@ -22,6 +22,7 @@ interface RunServerOptions {
   rateLimit?: number
   rateLimitWait: boolean
   githubToken?: string
+  apiKey?: string
   claudeCode: boolean
   showToken: boolean
   proxyEnv: boolean
@@ -46,6 +47,11 @@ export async function runServer(options: RunServerOptions): Promise<void> {
   state.rateLimitSeconds = options.rateLimit
   state.rateLimitWait = options.rateLimitWait
   state.showToken = options.showToken
+  state.apiKey = options.apiKey ?? process.env.COPILOT_API_KEY
+
+  if (state.apiKey) {
+    consola.info("Request authentication enabled")
+  }
 
   await ensurePaths()
   await cacheVSCodeVersion()
@@ -167,6 +173,11 @@ export const start = defineCommand({
       description:
         "Provide GitHub token directly (must be generated using the `auth` subcommand)",
     },
+    "api-key": {
+      type: "string",
+      description:
+        "Require clients to send this API key via Authorization: Bearer <key> or x-api-key",
+    },
     "claude-code": {
       alias: "c",
       type: "boolean",
@@ -199,6 +210,7 @@ export const start = defineCommand({
       rateLimit,
       rateLimitWait: args.wait,
       githubToken: args["github-token"],
+      apiKey: args["api-key"],
       claudeCode: args["claude-code"],
       showToken: args["show-token"],
       proxyEnv: args["proxy-env"],

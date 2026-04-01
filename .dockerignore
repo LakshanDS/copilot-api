@@ -11,3 +11,5 @@ tests/
 *.md
 
 .eslintcache
+
+.env

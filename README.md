@@ -160,6 +160,7 @@ The following command line options are available for the `start` command:
 | --rate-limit   | Rate limit in seconds between requests                                        | none       | -r    |
 | --wait         | Wait instead of error when rate limit is hit                                  | false      | -w    |
 | --github-token | Provide GitHub token directly (must be generated using the `auth` subcommand) | none       | -g    |
+| --api-key      | Require API key for incoming requests (or set `COPILOT_API_KEY` env var)      | none       | none  |
 | --claude-code  | Generate a command to launch Claude Code with Copilot API config              | false      | -c    |
 | --show-token   | Show GitHub and Copilot tokens on fetch and refresh                           | false      | none  |
 | --proxy-env    | Initialize proxy from environment variables                                   | false      | none  |
@@ -238,6 +239,9 @@ npx copilot-api@latest start --rate-limit 30 --wait
 # Provide GitHub token directly
 npx copilot-api@latest start --github-token ghp_YOUR_TOKEN_HERE
 
+# Require API key for all API endpoints (except /)
+npx copilot-api@latest start --api-key your_secret_key
+
 # Run only the auth flow
 npx copilot-api@latest auth
 
@@ -256,6 +260,20 @@ npx copilot-api@latest debug --json
 # Initialize proxy from environment variables (HTTP_PROXY, HTTPS_PROXY, etc.)
 npx copilot-api@latest start --proxy-env
 ```
+
+### Incoming Request Authentication
+
+You can protect all API endpoints by setting an API key either with:
+
+- CLI: `--api-key your_secret_key`
+- Env: `COPILOT_API_KEY=your_secret_key`
+
+When enabled, clients must include one of the following headers:
+
+- `Authorization: Bearer your_secret_key`
+- `x-api-key: your_secret_key`
+
+> `GET /` remains public so health checks continue to work.
 
 ## Using the Usage Viewer
 
