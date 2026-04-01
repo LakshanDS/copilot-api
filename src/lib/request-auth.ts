@@ -1,6 +1,6 @@
-import { timingSafeEqual } from "node:crypto"
-
 import type { Context, Next } from "hono"
+
+import { timingSafeEqual } from "node:crypto"
 
 import { state } from "./state"
 
@@ -54,7 +54,12 @@ export async function requireApiKey(c: Context, next: Next) {
     return next()
   }
 
-  if (c.req.path === "/" || c.req.method === "OPTIONS") {
+  if (
+    c.req.path === "/"
+    || c.req.path === "/usage"
+    || c.req.path.startsWith("/usage/")
+    || c.req.method === "OPTIONS"
+  ) {
     return next()
   }
 
