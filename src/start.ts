@@ -28,6 +28,10 @@ interface RunServerOptions {
   proxyEnv: boolean
 }
 
+function setGitHubToken(token: string): void {
+  state.githubToken = token
+}
+
 export async function runServer(options: RunServerOptions): Promise<void> {
   if (options.proxyEnv) {
     initProxyFromEnv()
@@ -57,7 +61,7 @@ export async function runServer(options: RunServerOptions): Promise<void> {
   await cacheVSCodeVersion()
 
   if (options.githubToken) {
-    state.githubToken = options.githubToken
+    setGitHubToken(options.githubToken)
     consola.info("Using provided GitHub token")
   } else {
     await setupGitHubToken()
@@ -94,7 +98,7 @@ export async function runServer(options: RunServerOptions): Promise<void> {
     const command = generateEnvScript(
       {
         ANTHROPIC_BASE_URL: serverUrl,
-        ANTHROPIC_AUTH_TOKEN: "dummy",
+        ANTHROPIC_AUTH_TOKEN: state.apiKey ?? "dummy",
         ANTHROPIC_MODEL: selectedModel,
         ANTHROPIC_DEFAULT_SONNET_MODEL: selectedModel,
         ANTHROPIC_SMALL_FAST_MODEL: selectedSmallModel,
